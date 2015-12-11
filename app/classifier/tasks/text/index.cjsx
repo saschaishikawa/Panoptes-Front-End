@@ -72,34 +72,43 @@ module.exports = React.createClass
           value={@props.annotation.value}
           onChange={@handleChange}
           onBlur={@handleBlur.bind(@, @props.task.instruction)}
-          onKeyDown={@handleKeyDown.bind(@, @props.task.instruction)} />
+          onKeyDown={@handleKeyDown.bind(@, @props.task.instruction)}
+        />
       </label>
     </GenericTask>
 
   handleChange: (index, e) ->
-    @props.annotation.value = React.findDOMNode(@refs.textInput).value
+    @props.annotation.value = @refs.textInput.value
     @props.onChange? e
 
   handleBlur: (question, e) ->
     answer = e.target.value.trim()
-    prevAnswers = []
-    if localStorage.getItem(question)
-      prevAnswers = JSON.parse(localStorage.getItem(question))
+    prevAnswers = @getPreviousAnswers(question) or []
     if answer and ((prevAnswers.indexOf answer) is -1)
       prevAnswers.unshift answer
-      localStorage.setItem(question, JSON.stringify(prevAnswers))
+      @setPreviousAnswers(prevAnswers, question)
 
   handleKeyDown: (question, e) ->
-    if (e.ctrlKey and e.keyCode is 77) and (not e.target.value or @state.prevAnswerMode)
-      prevAnswers = JSON.parse(localStorage.getItem(question))
+    if e.ctrlKey and (e.keyCode is 77 or e.keyCode is 75)
+      prevAnswers = @getPreviousAnswers(question)
+    # CTRL-M accesses previous answers from local storage
+    if (e.ctrlKey and e.keyCode is 77) and (not e.target.value or @state.prevAnswerMode) and prevAnswers.length
       e.target.value = prevAnswers[@state.prevAnswerIndex]
       @state.prevAnswerIndex = (@state.prevAnswerIndex += 1) %% prevAnswers.length
       @state.prevAnswerMode = true
-    if e.ctrlKey and e.keyCode is 75
-      prevAnswers = JSON.parse(localStorage.getItem(question))
+    # CTRL-K clears current answer from previous answers
+    if (e.ctrlKey and e.keyCode is 75) and prevAnswers
       answer = e.target.value.trim()
       answerIndex = prevAnswers.indexOf answer
       unless answerIndex is -1
-        prevAnswers.splice(answerIndex, 1)
-        localStorage.setItem(question, JSON.stringify(prevAnswers))
         e.target.value = ''
+        @state.prevAnswerIndex = 0
+        prevAnswers.splice answerIndex, 1
+        @setPreviousAnswers(prevAnswers, question)
+        @handleChange(e)
+
+  getPreviousAnswers: (question) ->
+    JSON.parse localStorage.getItem question
+
+  setPreviousAnswers: (prevAnswers, question) ->
+    localStorage.setItem question, JSON.stringify prevAnswers
