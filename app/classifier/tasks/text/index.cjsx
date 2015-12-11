@@ -58,13 +58,48 @@ module.exports = React.createClass
     annotation: null
     onChange: NOOP
 
+  getInitialState: ->
+    prevAnswerIndex: 0
+    prevAnswerMode: false
+
   render: ->
     <GenericTask question={@props.task.instruction} help={@props.task.help} required={@props.task.required}>
       <label className="answer">
-        <textarea className="standard-input full" rows="5" ref="textInput" value={@props.annotation.value} onChange={@handleChange} />
+        <textarea
+          className="standard-input full"
+          rows="5"
+          ref="textInput"
+          value={@props.annotation.value}
+          onChange={@handleChange}
+          onBlur={@handleBlur.bind(@, @props.task.instruction)}
+          onKeyDown={@handleKeyDown.bind(@, @props.task.instruction)} />
       </label>
     </GenericTask>
 
   handleChange: (index, e) ->
     @props.annotation.value = React.findDOMNode(@refs.textInput).value
     @props.onChange? e
+
+  handleBlur: (question, e) ->
+    answer = e.target.value.trim()
+    prevAnswers = []
+    if localStorage.getItem(question)
+      prevAnswers = JSON.parse(localStorage.getItem(question))
+    if answer and ((prevAnswers.indexOf answer) is -1)
+      prevAnswers.unshift answer
+      localStorage.setItem(question, JSON.stringify(prevAnswers))
+
+  handleKeyDown: (question, e) ->
+    if (e.ctrlKey and e.keyCode is 77) and (not e.target.value or @state.prevAnswerMode)
+      prevAnswers = JSON.parse(localStorage.getItem(question))
+      e.target.value = prevAnswers[@state.prevAnswerIndex]
+      @state.prevAnswerIndex = (@state.prevAnswerIndex += 1) %% prevAnswers.length
+      @state.prevAnswerMode = true
+    if e.ctrlKey and e.keyCode is 75
+      prevAnswers = JSON.parse(localStorage.getItem(question))
+      answer = e.target.value.trim()
+      answerIndex = prevAnswers.indexOf answer
+      unless answerIndex is -1
+        prevAnswers.splice(answerIndex, 1)
+        localStorage.setItem(question, JSON.stringify(prevAnswers))
+        e.target.value = ''
