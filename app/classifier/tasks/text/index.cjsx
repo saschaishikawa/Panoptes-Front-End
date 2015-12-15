@@ -1,4 +1,5 @@
 React = require 'react'
+Router = require 'react-router'
 {Markdown} = require 'markdownz'
 GenericTask = require '../generic'
 GenericTaskEditor = require '../generic-editor'
@@ -99,16 +100,15 @@ module.exports = React.createClass
     # CTRL-K clears current answer from previous answers
     if (e.ctrlKey and e.keyCode is 75) and prevAnswers
       answer = e.target.value.trim()
-      answerIndex = prevAnswers.indexOf answer
-      unless answerIndex is -1
+      unless (prevAnswers.indexOf answer) is -1
         e.target.value = ''
         @state.prevAnswerIndex = 0
-        prevAnswers.splice answerIndex, 1
+        prevAnswers.splice (prevAnswers.indexOf answer), 1
         @setPreviousAnswers(prevAnswers, question)
         @handleChange(e)
 
   getPreviousAnswers: (question) ->
-    JSON.parse localStorage.getItem question
+    JSON.parse localStorage.getItem "#{window.location.pathname}-#{question}"
 
   setPreviousAnswers: (prevAnswers, question) ->
-    localStorage.setItem question, JSON.stringify prevAnswers
+    localStorage.setItem "#{window.location.pathname}-#{question}", JSON.stringify prevAnswers
