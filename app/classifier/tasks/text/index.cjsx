@@ -7,6 +7,11 @@ levenshtein = require 'fast-levenshtein'
 
 NOOP = Function.prototype
 
+# keys utilized for previous answer access via local storage
+key =
+  K: 75
+  M: 77
+
 Summary = React.createClass
   displayName: 'TextSummary'
 
@@ -90,19 +95,20 @@ module.exports = React.createClass
       @setPreviousAnswers(prevAnswers, question)
 
   handleKeyDown: (question, e) ->
-    if e.ctrlKey and (e.keyCode is 77 or e.keyCode is 75)
-      prevAnswers = @getPreviousAnswers(question)
+    return unless e.ctrlKey and (e.keyCode is key.M or e.keyCode is key.K) and @getPreviousAnswers(question).length
+    prevAnswers = @getPreviousAnswers(question)
     # CTRL-M accesses previous answers from local storage
-    if (e.ctrlKey and e.keyCode is 77) and (not e.target.value or @state.prevAnswerMode) and prevAnswers.length
+    if (e.keyCode is key.M) and (not e.target.value or @state.prevAnswerMode)
       e.target.value = prevAnswers[@state.prevAnswerIndex]
+      # *** TODO use setState ***
       @state.prevAnswerIndex = (@state.prevAnswerIndex += 1) %% prevAnswers.length
       @state.prevAnswerMode = true
-    # CTRL-K clears current answer from previous answers
-    if (e.ctrlKey and e.keyCode is 75) and prevAnswers
+    # CTRL-K clears current answer from previous answers in local storage
+    if e.keyCode is key.K
       answer = e.target.value.trim()
       unless (prevAnswers.indexOf answer) is -1
         e.target.value = ''
-        @state.prevAnswerIndex = 0
+        @setState prevAnswerIndex: 0
         prevAnswers.splice (prevAnswers.indexOf answer), 1
         @setPreviousAnswers(prevAnswers, question)
         @handleChange(e)
