@@ -9,6 +9,8 @@ NOOP = Function.prototype
 key =
   K: 75
   M: 77
+  Comma: 188
+  Period: 190
 
 Summary = React.createClass
   displayName: 'TextSummary'
@@ -64,7 +66,6 @@ module.exports = React.createClass
 
   getInitialState: ->
     prevAnswerIndex: 0
-    prevAnswerMode: false
 
   render: ->
     <GenericTask question={@props.task.instruction} help={@props.task.help} required={@props.task.required}>
@@ -96,14 +97,11 @@ module.exports = React.createClass
     return unless e.ctrlKey and (e.keyCode is key.M or e.keyCode is key.K)
     prevAnswers = @getPreviousAnswers(question)
     return unless prevAnswers.length
-    # CTRL-M accesses previous answers from local storage
-    if (e.keyCode is key.M) and (not e.target.value or @state.prevAnswerMode)
+    # accesses previous answers from local storage
+    if (e.keyCode is key.M) and (not e.target.value or (prevAnswers.indexOf e.target.value.trim()) isnt -1)
       @props.annotation.value = prevAnswers[@state.prevAnswerIndex]
-      @setState {
-        prevAnswerIndex: (@state.prevAnswerIndex + 1) %% prevAnswers.length
-        prevAnswerMode: true
-      }
-    # CTRL-K clears current answer from previous answers in local storage
+      @setState prevAnswerIndex: (@state.prevAnswerIndex + 1) %% prevAnswers.length
+    # clears current answer from previous answers in local storage
     if e.keyCode is key.K
       answer = e.target.value.trim()
       unless (prevAnswers.indexOf answer) is -1
