@@ -1,5 +1,4 @@
 React = require 'react'
-Router = require 'react-router'
 {Markdown} = require 'markdownz'
 GenericTask = require '../generic'
 GenericTaskEditor = require '../generic-editor'
@@ -7,7 +6,6 @@ levenshtein = require 'fast-levenshtein'
 
 NOOP = Function.prototype
 
-# keys utilized for previous answer access via local storage
 key =
   K: 75
   M: 77
@@ -95,14 +93,16 @@ module.exports = React.createClass
       @setPreviousAnswers(prevAnswers, question)
 
   handleKeyDown: (question, e) ->
-    return unless e.ctrlKey and (e.keyCode is key.M or e.keyCode is key.K) and @getPreviousAnswers(question).length
+    return unless e.ctrlKey and (e.keyCode is key.M or e.keyCode is key.K)
     prevAnswers = @getPreviousAnswers(question)
+    return unless prevAnswers.length
     # CTRL-M accesses previous answers from local storage
     if (e.keyCode is key.M) and (not e.target.value or @state.prevAnswerMode)
-      e.target.value = prevAnswers[@state.prevAnswerIndex]
-      # *** TODO use setState ***
-      @state.prevAnswerIndex = (@state.prevAnswerIndex += 1) %% prevAnswers.length
-      @state.prevAnswerMode = true
+      @props.annotation.value = prevAnswers[@state.prevAnswerIndex]
+      @setState {
+        prevAnswerIndex: (@state.prevAnswerIndex + 1) %% prevAnswers.length
+        prevAnswerMode: true
+      }
     # CTRL-K clears current answer from previous answers in local storage
     if e.keyCode is key.K
       answer = e.target.value.trim()
