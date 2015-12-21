@@ -9,8 +9,6 @@ NOOP = Function.prototype
 key =
   K: 75
   M: 77
-  Comma: 188
-  Period: 190
 
 Summary = React.createClass
   displayName: 'TextSummary'
