@@ -39,6 +39,7 @@ workflow = apiClient.type('workflows').create
         {label: 'Multi-answer question', next: 'features'}
         {label: 'Draw stuff', next: 'draw'}
         {label: 'Survey the image', next: 'survey'}
+        {label: 'Text - multiple', next: 'textMultiple'}
         {label: 'We’re done here.', next: null}
       ]
 
@@ -56,6 +57,25 @@ workflow = apiClient.type('workflows').create
         **Example**: If you see a bee, then type "Bee"
       '''
       next: 'features'
+
+    textMultiple:
+      type: 'textMultiple'
+      required: true
+      instruction: 'Annotate the following attributes.'
+      help: 'Write your best guess to the noted attributes of the subject.'
+      answersOrder: [
+        'scientificName', 'location', 'habitat'
+      ]
+      answers:
+        scientificName:
+          title: 'Scientific Name'
+          description: "This is the species name. Include at least genus and species as written, but do not record Scientific Author's name here."
+        location:
+          title: 'Location'
+          description: 'The place name or geographic description of the place where the specimen was found.'
+        habitat:
+          title: 'Habitat & Decription'
+          description: 'This is a description of the area where the specimen was found and/or a description of the specimen itself.'
 
     features:
       type: 'multiple'

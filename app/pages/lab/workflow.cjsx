@@ -55,6 +55,7 @@ EditWorkflowPage = React.createClass
 
   canUseTask: (project, task)->
     task in project.experimental_tools
+    true
 
   render: ->
     window.editingWorkflow = @props.workflow
