@@ -15,6 +15,7 @@ EXPERIMENTAL_FEATURES = [
   'crop'
   'tutorial'
   'text',
+  'text-multiple'
   'hide classification summaries'
 ]
 

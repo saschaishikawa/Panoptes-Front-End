@@ -98,7 +98,8 @@ EditWorkflowPage = React.createClass
                         when 'survey' then <i className="fa fa-binoculars fa-fw"></i>
                         when 'flexibleSurvey' then <i className="fa fa-binoculars fa-fw"></i>
                         when 'crop' then <i className="fa fa-crop fa-fw"></i>
-                        when 'text' then <i className="fa fa-file-text-o fa-fw"></i>}
+                        when 'text' then <i className="fa fa-file-text-o fa-fw"></i>
+                        when 'textMultiple' then <i className="fa fa-file-text-o fa-fw"></i>}
                       {' '}
                       {tasks[definition.type].getTaskText definition}
                       {if key is @props.workflow.first_task
@@ -158,6 +159,14 @@ EditWorkflowPage = React.createClass
                         <i className="fa fa-crop fa-2x"></i>
                         <br />
                         <small><strong>Crop</strong></small>
+                      </button>
+                    </AutoSave>}{' '}
+                  {if @canUseTask(@props.project, "text-multiple")
+                    <AutoSave resource={@props.workflow}>
+                      <button type="submit" className="minor-button" onClick={@addNewTask.bind this, 'textMultiple'} title="Multiple text tasks: the volunteer writes free-form text into multiple dialog boxes.">
+                        <i className="fa fa-file-text-o fa-2x"></i>
+                        <br />
+                        <small><strong>Text Multiple</strong></small>
                       </button>
                     </AutoSave>}{' '}
                 </TriggeredModalForm>
