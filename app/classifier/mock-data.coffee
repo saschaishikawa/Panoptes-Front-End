@@ -61,7 +61,7 @@ workflow = apiClient.type('workflows').create
     textMultiple:
       type: 'textMultiple'
       required: true
-      instruction: 'Annotate the following attributes.'
+      instruction: 'Please annotate the following attributes.'
       help: 'Write your best guess to the noted attributes of the subject.'
       answersOrder: [
         'scientificName', 'location', 'habitat'
