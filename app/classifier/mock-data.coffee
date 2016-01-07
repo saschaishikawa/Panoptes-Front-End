@@ -56,13 +56,14 @@ workflow = apiClient.type('workflows').create
       help: '''
         **Example**: If you see a bee, then type "Bee"
       '''
-      next: 'features'
+      # next: 'features'
 
     textMultiple:
       type: 'textMultiple'
       required: true
       instruction: 'Please annotate the following attributes.'
       help: 'Write your best guess to the noted attributes of the subject.'
+      next: 'write'
       answersOrder: [
         'scientificName', 'location', 'habitat'
       ]

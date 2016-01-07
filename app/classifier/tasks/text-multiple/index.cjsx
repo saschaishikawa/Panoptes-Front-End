@@ -20,13 +20,13 @@ Summary = React.createClass
     # TODO incorporate expanded prop?
 
   render: ->
-    {answers} = @props.task
+    {answersOrder, answers} = @props.task
 
     <div className="classification-task-summary">
       <div className="question">{@props.task.instruction}</div>
       <div className="answers">
         {if @props.annotation.value
-          Object.keys(answers).reverse().map (key, i) =>
+          answersOrder.map (key, i) =>
             <div key={i} className="answer">
               "<code>{answers[key].title} - {@props.annotation?.value[key]}</code>"
             </div>
