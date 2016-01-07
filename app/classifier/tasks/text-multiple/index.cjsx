@@ -93,6 +93,7 @@ module?.exports = React.createClass
                 className="standard-input full"
                 rows="2"
                 ref="text-#{name}"
+                defaultValue={@props.annotation.value[name] ? ""}
                 value={answers[name].value}
                 onChange={@handleChange.bind(@, textBoxes)}
                 onBlur={@handleBlur.bind(@, name)}
