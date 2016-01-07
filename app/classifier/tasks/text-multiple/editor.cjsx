@@ -26,6 +26,7 @@ module?.exports = React.createClass
 
   updateTasks: ->
     @props.workflow.update('tasks')
+    @props.workflow.save()
 
   addAnswer: (answerKey, answer) ->
     if (not answer.title) or (not answerKey)
@@ -40,16 +41,18 @@ module?.exports = React.createClass
 
   onClickAddAnswer: (e) ->
     @addAnswer(@refs.answerKey.value, {
-      title: @refs.answerTitle.value,
+      title: @refs.answerTitle.value
+      description: @refs.answerDescription.value
       })
-    @updateTasks()
 
     @refs.answerKey.value = ''
     @refs.answerTitle.value = ''
+    @refs.answerDescription.value = ''
 
-  onClickSaveWorkflow: (e) ->
-    if window.confirm('Are you sure that you would like to save these changes?')
-      @props.workflow.save()
+  # TODO delete onClickSaveWorkflow if unneccessary
+  # onClickSaveWorkflow: (e) ->
+  #   if window.confirm('Are you sure that you would like to save these changes?')
+  #     @props.workflow.save()
 
   onChangeTextBox: (e) ->
     @setState({textBox: e.target.value})
@@ -61,7 +64,6 @@ module?.exports = React.createClass
 
     @setState {textBox: ''}, =>
       @updateTasks()
-      @props.workflow.save()
 
   onChangeAnswersOrder: (answersOrder) ->
     @props.task.answersOrder = answersOrder
@@ -73,7 +75,7 @@ module?.exports = React.createClass
     {instruction, answers, answersOrder} = @props.task
     answerKeys = Object.keys(answers)
 
-    # TODO add CSS
+    # TODO add CSS?
     <div>
       <div>
 
@@ -86,17 +88,7 @@ module?.exports = React.createClass
             </AutoSave>
             <small className="form-help">Describe the task, or ask the question, in a way that is clear to a non-expert. You can use markdown to format this text.</small><br />
           </div>
-          <br />
-          {unless @props.isSubtask
-            <div>
-              <AutoSave resource={@props.workflow}>
-                <span className="form-label">Help text</span>
-                <br />
-                <MarkdownEditor name="#{@props.taskPrefix}.help" onHelp={-> alert <MarkdownHelp/>} value={@props.task.help ? ""} rows="7" className="full" onChange={handleChange} />
-              </AutoSave>
-              <small className="form-help">Add text and images for a window that pops up when volunteers click “Need some help?” You can use markdown to format this text and add images. The help text can be as long as you need, but you should try to keep it simple and avoid jargon.</small>
-            </div>}
-            <hr/>
+          <hr/>
         </section>
 
         <section>
@@ -116,6 +108,7 @@ module?.exports = React.createClass
           <h2 className="form-label">Add a Text Box<TriggeredModalForm trigger={<i className="fa fa-question-circle"></i>}>
             <p><strong>Answer Keys</strong> are used as a unique indentifier to store data within the classification.</p>
             <p><strong>Titles</strong> are what will be displayed as the attribute that needs annotation.</p>
+            <p><strong>Description</strong> will provide additional details about the attribute and how it should be annotated.</p>
           </TriggeredModalForm></h2>
           <label>
             Answer Key <input ref="answerKey"></input>
@@ -123,6 +116,10 @@ module?.exports = React.createClass
           <br/>
           <label>
             Title <input ref="answerTitle"></input>
+          </label>
+          <br/>
+          <label>
+            Description <input ref="answerDescription"></input>
           </label>
           <br/>
           <button type="button" onClick={@onClickAddAnswer}>+ Add Text Box</button>
@@ -151,8 +148,9 @@ module?.exports = React.createClass
       </div>
 
       <hr/>
-      <button type="button" onClick={@onClickSaveWorkflow}><i className="fa fa-save" /> Save Workflow</button>
-      <hr/>
+
+      {#<button type="button" onClick={@onClickSaveWorkflow}><i className="fa fa-save" /> Save Workflow</button>}
+      {#<hr/>}
 
       <AutoSave resource={@props.workflow}>
         <span className="form-label">Next task</span>

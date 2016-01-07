@@ -26,7 +26,7 @@ Summary = React.createClass
       <div className="question">{@props.task.instruction}</div>
       <div className="answers">
         {if @props.annotation.value
-          Object.keys(answers).map (key, i) =>
+          Object.keys(answers).reverse().map (key, i) =>
             <div key={i} className="answer">
               "<code>{answers[key].title} - {@props.annotation?.value[key]}</code>"
             </div>
@@ -80,18 +80,18 @@ module?.exports = React.createClass
     {answers, answersOrder} = @props.task
     textBoxes = if answersOrder.length then answersOrder else Object.keys(answers)
 
-    # TODO add custom CSS for title and description <div>'s
     <GenericTask question={@props.task.instruction} help={@props.task.help} required={@props.task.required}>
-      <div>
+      <div className="text-multiple-task">
 
         {textBoxes.map (name, i) =>
           <div key={i}>
             <hr/>
-            <div>{answers[name].title}</div>
+            <div className="title">{answers[name].title}</div>
+            <div className="description">{answers[name].description}</div>
             <label className="answer">
               <textarea
                 className="standard-input full"
-                rows="3"
+                rows="2"
                 ref="text-#{name}"
                 value={answers[name].value}
                 onChange={@handleChange.bind(@, textBoxes)}
@@ -99,7 +99,6 @@ module?.exports = React.createClass
                 onKeyDown={@handleKeyDown.bind(@, name)}
                 />
             </label>
-            <div>{answers[name].description}</div>
           </div>
         }
 
