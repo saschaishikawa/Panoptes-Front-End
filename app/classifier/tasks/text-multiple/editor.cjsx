@@ -61,17 +61,18 @@ module?.exports = React.createClass
   onChangeTextBox: (e) ->
     @setState({textBox: e.target.value})
 
-  onClickDeleteTextBox: (e) ->
-    if window.confirm('Are you sure that you would like to save these changes?')
-      @props.task.answersOrder = @props.task.answersOrder.filter (answer) => answer isnt @refs.textBox.value
-      delete @props.task.answers[@refs.textBox.value]
-
-    @setState {textBox: ''}, =>
+  onClickDeleteTextBox: (name) ->
+    if window.confirm('Are you sure you would like to delete the text box?')
+      @props.task.answersOrder = @props.task.answersOrder.filter (answer) => answer isnt name
+      delete @props.task.answers[name]
       @updateTasks()
 
   onChangeAnswersOrder: (answersOrder) ->
     @props.task.answersOrder = answersOrder
     @updateTasks()
+
+  dragReorderableRender: (name) ->
+    return <li key={name}><i className="fa fa-reorder" title="Drag to reorder" /> {name} <button onClick={@onClickDeleteTextBox.bind(@, name)}><i className="fa fa-close" /></button></li>
 
   render: ->
     handleChange = handleInputChange.bind @props.workflow
@@ -101,9 +102,7 @@ module?.exports = React.createClass
             tag="ol"
             items={answersOrder}
             onChange={@onChangeAnswersOrder}
-            render={(name) ->
-              <li><i className="fa fa-reorder" title="Drag to reorder" /> {name}</li>
-            }
+            render={@dragReorderableRender}
           />
           <hr/>
         </section>
@@ -136,7 +135,7 @@ module?.exports = React.createClass
         </section>
 
         <section>
-          <h2 className="form-label">Delete a Text Box</h2>
+          <h2 className="form-label">Edit a Text Box</h2>
 
           <span>Text Box </span>
 
@@ -146,11 +145,14 @@ module?.exports = React.createClass
             {answerKeys.map (answerKey, i) =>
               <option key={answerKey + i} value={answerKey}>{answers[answerKey].title}</option>}
           </select>
-
+          <br/>
           {if @state.textBox
-            <div>
-              <button type="button" onClick={@onClickDeleteTextBox}><i className="fa fa-close" /> Delete Text Box</button>
-            </div>
+            # TODO fix this!
+            <AutoSave resource={@props.workflow}>
+              <label>
+                Title <input defaultValue={@props.task.answers[@state.textBox].title}></input>
+              </label>
+            </AutoSave>
           }
         </section>
 
