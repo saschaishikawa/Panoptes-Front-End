@@ -71,12 +71,14 @@ workflow = apiClient.type('workflows').create
         scientificName:
           title: 'Scientific Name'
           description: "This is the species name. Include at least genus and species as written, but do not record Scientific Author's name here."
+          required: true
         location:
           title: 'Location'
           description: 'The place name or geographic description of the place where the specimen was found.'
         habitat:
           title: 'Habitat & Decription'
           description: 'This is a description of the area where the specimen was found and/or a description of the specimen itself.'
+          required: true
 
     features:
       type: 'multiple'

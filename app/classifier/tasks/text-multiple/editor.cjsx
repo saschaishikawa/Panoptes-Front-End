@@ -43,11 +43,15 @@ module?.exports = React.createClass
     @addAnswer(@refs.answerKey.value, {
       title: @refs.answerTitle.value
       description: @refs.answerDescription.value
+      required: @refs.answerRequired.checked
       })
+
+    console.log @props.task
 
     @refs.answerKey.value = ''
     @refs.answerTitle.value = ''
     @refs.answerDescription.value = ''
+    @refs.answerRequired.checked = false
 
   # TODO delete onClickSaveWorkflow if unneccessary
   # onClickSaveWorkflow: (e) ->
@@ -109,6 +113,7 @@ module?.exports = React.createClass
             <p><strong>Answer Keys</strong> are used as a unique indentifier to store data within the classification.</p>
             <p><strong>Titles</strong> are what will be displayed as the attribute that needs annotation.</p>
             <p><strong>Description</strong> will provide additional details about the attribute and how it should be annotated.</p>
+            <p><strong>Required</strong> will require an annotation for the noted attribute to proceed.</p>
           </TriggeredModalForm></h2>
           <label>
             Answer Key <input ref="answerKey"></input>
@@ -120,6 +125,10 @@ module?.exports = React.createClass
           <br/>
           <label>
             Description <input ref="answerDescription"></input>
+          </label>
+          <br/>
+          <label key="required" className="pill-button">
+            Required <input type="checkbox" ref="answerRequired"></input>
           </label>
           <br/>
           <button type="button" onClick={@onClickAddAnswer}>+ Add Text Box</button>

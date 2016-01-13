@@ -17,7 +17,6 @@ Summary = React.createClass
   getDefaultProps: ->
     task: {}
     annotation: {}
-    # TODO incorporate expanded prop?
 
   render: ->
     {answersOrder, answers} = @props.task
@@ -55,12 +54,21 @@ module?.exports = React.createClass
       value: {}
 
     isAnnotationComplete: (task, annotation) ->
-      answer = (key) -> annotation.value[key]
-      answersCompleted = Object.keys(annotation.value)
-        .map(answer)
-        .filter(Boolean)
+      requiredFilter = (taskAnswer) -> task.answers[taskAnswer].required
+      requiredAnswers = Object.keys(task.answers).filter requiredFilter
 
-      answersCompleted.length and (answersCompleted.length is Object.keys(task.answers).length)
+      answer = (key) ->
+        return key if annotation.value[key]? and annotation.value[key] isnt ''
+      answersCompleted = requiredAnswers.map(answer)
+
+      compareArrays = (requiredAnswers, answersCompleted) ->
+        areEqual = true
+        for i in [0..requiredAnswers.length]
+          if requiredAnswers[i] isnt answersCompleted[i]
+            areEqual = false
+        return areEqual
+
+      (not requiredAnswers.length) or compareArrays(requiredAnswers, answersCompleted)
 
     testAnnotationQuality: (unknown, knownGood) ->
       distance = levenshtein.get unknown.value.toLowerCase(), knownGood.value.toLowerCase()
@@ -97,7 +105,7 @@ module?.exports = React.createClass
                 value={answers[name].value}
                 onChange={@handleChange.bind(@, textBoxes)}
                 onBlur={@handleBlur.bind(@, name)}
-                onKeyDown={@handleKeyDown.bind(@, name)}
+                onKeyDown={@handleKeyDown.bind(@, name, textBoxes)}
                 />
             </label>
           </div>
@@ -111,7 +119,6 @@ module?.exports = React.createClass
       obj[name] = @refs["text-#{name}"].value.trim()
       obj
     , {})
-
     @props.annotation.value = currentAnswers
     @props.onChange()
 
@@ -123,7 +130,7 @@ module?.exports = React.createClass
       @setPreviousAnswers(prevAnswers, answerKey)
     @setState prevAnswerIndex: 0
 
-  handleKeyDown: (answerKey, e) ->
+  handleKeyDown: (answerKey, textBoxes, e) ->
     return unless e.ctrlKey and (e.keyCode is key.M or e.keyCode is key.K)
     prevAnswers = @getPreviousAnswers(answerKey)
     return unless prevAnswers.length
@@ -139,7 +146,7 @@ module?.exports = React.createClass
         @setState prevAnswerIndex: 0
         prevAnswers.splice (prevAnswers.indexOf answerValue), 1
         @setPreviousAnswers(prevAnswers, answerKey)
-        @handleChange(e)
+        @handleChange(textBoxes)
 
   getPreviousAnswers: (answerKey) ->
     JSON.parse localStorage.getItem "#{window.location.pathname}-#{answerKey}"
