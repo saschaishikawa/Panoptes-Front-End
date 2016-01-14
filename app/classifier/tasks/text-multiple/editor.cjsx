@@ -53,11 +53,6 @@ module?.exports = React.createClass
     @refs.answerDescription.value = ''
     @refs.answerRequired.checked = false
 
-  # TODO delete onClickSaveWorkflow if unneccessary
-  # onClickSaveWorkflow: (e) ->
-  #   if window.confirm('Are you sure that you would like to save these changes?')
-  #     @props.workflow.save()
-
   onChangeTextBox: (e) ->
     @setState({textBox: e.target.value})
 
@@ -80,7 +75,6 @@ module?.exports = React.createClass
     {instruction, answers, answersOrder} = @props.task
     answerKeys = Object.keys(answers)
 
-    # TODO add CSS?
     <div>
       <div>
 
@@ -134,34 +128,7 @@ module?.exports = React.createClass
           <hr/>
         </section>
 
-        <section>
-          <h2 className="form-label">Edit a Text Box</h2>
-
-          <span>Text Box </span>
-
-          <select ref="textBox" defaultValue={@state.textBox} onChange={@onChangeTextBox}>
-            <option value="" disabled>Text Box</option>
-
-            {answerKeys.map (answerKey, i) =>
-              <option key={answerKey + i} value={answerKey}>{answers[answerKey].title}</option>}
-          </select>
-          <br/>
-          {if @state.textBox
-            # TODO fix this!
-            <AutoSave resource={@props.workflow}>
-              <label>
-                Title <input defaultValue={@props.task.answers[@state.textBox].title}></input>
-              </label>
-            </AutoSave>
-          }
-        </section>
-
       </div>
-
-      <hr/>
-
-      {#<button type="button" onClick={@onClickSaveWorkflow}><i className="fa fa-save" /> Save Workflow</button>}
-      {#<hr/>}
 
       <AutoSave resource={@props.workflow}>
         <span className="form-label">Next task</span>
