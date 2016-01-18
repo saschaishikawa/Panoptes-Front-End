@@ -91,6 +91,18 @@ module?.exports = React.createClass
         </section>
 
         <section>
+          <div>
+            <AutoSave resource={@props.workflow}>
+              <span className="form-label">Help text</span>
+              <br />
+              <MarkdownEditor name="#{@props.taskPrefix}.help" onHelp={-> alert <MarkdownHelp/>} value={@props.task.help ? ""} rows="4" className="full" onChange={handleChange} />
+            </AutoSave>
+            <small className="form-help">Add text and images for a window that pops up when volunteers click “Need some help?” You can use markdown to format this text and add images. The help text can be as long as you need, but you should try to keep it simple and avoid jargon.</small>
+          </div>
+          <hr/>
+        </section>
+
+        <section>
           <h2 className="form-label">Text Box Order</h2>
           <DragReorderable
             tag="ol"
