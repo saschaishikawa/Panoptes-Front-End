@@ -27,7 +27,11 @@ Summary = React.createClass
         {if @props.annotation.value
           answersOrder.map (key, i) =>
             <div key={i} className="answer">
-              "<code>{answers[key].title} - {@props.annotation?.value[key]}</code>"
+              {if @props.annotation?.value[key] is ''
+                <span><i className="fa fa-square-o fa-fw"></i>{answers[key].title} - NO ANSWER PROVIDED</span>
+              else
+                <span><i className="fa fa-check-square-o fa-fw"></i>{answers[key].title} - "<code>{@props.annotation?.value[key]}</code>"</span>
+              }
             </div>
           }
       </div>

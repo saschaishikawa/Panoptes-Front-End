@@ -136,7 +136,7 @@ module?.exports = React.createClass
             Required <input type="checkbox" ref="answerRequired"></input>
           </label>
           <br/>
-          <button type="button" onClick={@onClickAddAnswer}>+ Add Text Box</button>
+          <button type="button" onClick={@onClickAddAnswer}><i className="fa fa-plus" /> Add Text Box</button>
           <hr/>
         </section>
 
