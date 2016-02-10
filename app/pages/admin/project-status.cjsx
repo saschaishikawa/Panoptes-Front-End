@@ -17,6 +17,7 @@ EXPERIMENTAL_FEATURES = [
   'field guide'
   'text'
   'hide classification summaries'
+  'pan and zoom'
 ]
 
 ProjectToggle = React.createClass
