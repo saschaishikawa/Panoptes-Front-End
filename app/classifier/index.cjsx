@@ -373,6 +373,7 @@ module.exports = React.createClass
   getDefaultProps: ->
     user: null
     classification: mockData?.classification ? {}
+    project: mockData?.project
     onLoad: Function.prototype
     onComplete: Function.prototype
     onClickNext: Function.prototype
